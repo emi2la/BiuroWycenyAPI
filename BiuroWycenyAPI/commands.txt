@@ -1,0 +1,2 @@
+﻿# Generate Db context and models
+scaffold-dbcontext 'Data Source=db-mssql;Initial Catalog=pd3100;Integrated Security=True' Microsoft.EntityFrameworkCore.SqlServer -Tables "Rzeczoznawca", "Zlecenie", "Cennik" -OutputDir Models

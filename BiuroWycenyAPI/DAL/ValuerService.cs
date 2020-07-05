@@ -16,6 +16,53 @@ namespace BiuroWycenyAPI.DAL
         {
             _context = context;
         }
+
+        public ICollection<ValuerResponseDto> GetValuersCollection(string lastName)
+        {
+
+            if (String.IsNullOrEmpty(lastName))
+            {
+                return _context.Rzeczoznawca
+                        .Select(v => new ValuerResponseDto
+                        {
+                            IdValuer = v.Id,
+                            Number = v.Nr,
+                            FirstName = v.Imie,
+                            LastName = v.Nazwisko,
+                            Mail = v.Mail
+                        })
+                        .ToList();
+            }
+
+            return _context.Rzeczoznawca
+                .Where(v => v.Nazwisko == lastName)
+                .Select(v => new ValuerResponseDto
+                {
+                    IdValuer = v.Id,
+                    FirstName = v.Imie,
+                    LastName = v.Nazwisko,
+                    Mail = v.Mail,
+                    Number = v.Nr
+                })
+                .ToList();
+
+        }
+
+        public ValuerResponseDto GetValuer(int idValuer)
+        {
+            return _context.Rzeczoznawca
+                .Where(v => v.Id == idValuer)
+                .Select(v => new ValuerResponseDto
+                {
+                    IdValuer = v.Id,
+                    FirstName = v.Imie,
+                    LastName = v.Nazwisko,
+                    Mail = v.Mail,
+                    Number = v.Nr
+                })
+                .SingleOrDefault();
+        }
+
         public bool AddValuer(ValuerRequestDto newValuer)
         {
             try
@@ -40,76 +87,9 @@ namespace BiuroWycenyAPI.DAL
 
         }
 
-        public bool DeleteValuer(int idValuer)
-        {
-            var valuerToRemove = _context.Rzeczoznawca.Where(v => v.Id == idValuer).SingleOrDefault();
-
-            if (valuerToRemove == null)
-            {
-                return false;
-            }
-
-            try
-            {
-                _context.Rzeczoznawca.Remove(valuerToRemove);
-                _context.SaveChanges();
-            }
-            catch (Exception e)
-            {
-                return false;
-            }
-            return true;
-        }
-
-        public ValuerResponseDto GetValuer(int idValuer)
-        {
-            return _context.Rzeczoznawca
-                .Where(v => v.Id == idValuer)
-                .Select(v => new ValuerResponseDto
-                {
-                    IdValuer = v.Id,
-                    FirstName = v.Imie,
-                    LastName = v.Nazwisko,
-                    Mail = v.Mail,
-                    Number = v.Nr
-                })
-                .SingleOrDefault();
-        }
-
-        public ICollection<ValuerResponseDto> GetValuersCollection(string lastName)
-        {
-
-            if (String.IsNullOrEmpty(lastName))
-            {
-                return _context.Rzeczoznawca
-                        .Select(v => new ValuerResponseDto
-                        {
-                            IdValuer = v.Id,
-                            Number = v.Nr,
-                            FirstName = v.Imie,
-                            LastName = v.Nazwisko,
-                            Mail = v.Mail
-    })
-                        .ToList();
-            }
-
-            return _context.Rzeczoznawca
-                .Where(v => v.Nazwisko == lastName)
-                .Select(v => new ValuerResponseDto
-                {
-                    IdValuer = v.Id,
-                    FirstName = v.Imie,
-                    LastName = v.Nazwisko,
-                    Mail = v.Mail,
-                    Number = v.Nr
-                })
-                .ToList();
-
-        }
-
-
         public bool UpdateValuer(int id, ValuerRequestDto updateValuer)
         {
+
             var valuerToUpdate = _context.Rzeczoznawca.Where(v => v.Id == id).SingleOrDefault();
             if (valuerToUpdate == null)
             {
@@ -132,12 +112,27 @@ namespace BiuroWycenyAPI.DAL
             return true;
         }
 
-        //public ICollection<Rzeczoznawca> GetValuerWithDetails(int idValuer)
-        //{
-        //    return _context.Rzeczoznawca
-        //        .Include(v => v.Zlecenie)
-        //        .ThenInclude(v => v.IdRzeczoznawcaNavigation).ToList();
-        //}
+        public bool DeleteValuer(int idValuer)
+        {
+            var valuerToRemove = _context.Rzeczoznawca.Where(v => v.Id == idValuer).SingleOrDefault();
+
+            if (valuerToRemove == null)
+            {
+                return false;
+            }
+
+            try
+            {
+                _context.Rzeczoznawca.Remove(valuerToRemove);
+                _context.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+            return true;
+        }
+
         public string Test()
         {
             return "It works! Version with connection to DB and Entity Framework";

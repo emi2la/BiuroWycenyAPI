@@ -23,9 +23,9 @@ namespace BiuroWycenyAPI.Controllers
         [HttpGet]
         public IActionResult GetValuers(string lastName)
         {
-            var quests = _service.GetValuersCollection(lastName);
+            var valuer = _service.GetValuersCollection(lastName);
 
-            return Ok(quests);
+            return Ok(valuer);
         }
 
         [HttpGet("{id:int}")]
